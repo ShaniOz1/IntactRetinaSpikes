@@ -17,7 +17,7 @@ def plot_direct_spikes(obj):
         ax.set_xlabel('Time after stimulation [msec]')
         ax.set_ylabel('Amplitude [uV]')
         ax.set_ylim([-500, 500])
-    plt.suptitle(f'{obj.file_name}')
+    plt.suptitle(f'{obj.file_name[:-3]}')
     plt.tight_layout()
     plt.savefig(rf'{obj.output_folder}_Direct_response.png')
     plt.close()

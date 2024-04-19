@@ -44,7 +44,7 @@ def ica_based_method(pulses):
 
         # Divide components to artifact-related and signal-related
         pp_thresh = 160  # 1.4 msec gap
-        art_related_comp = np.where((np.array(real_max_list) > 600) | (np.array(pp_list) < pp_thresh))
+        art_related_comp = np.where((np.array(real_max_list) > 750) | (np.array(pp_list) < pp_thresh))
         signal_related_comp = np.setdiff1d(np.arange(0, num_comp), art_related_comp)
 
         signal_comp = components.copy()

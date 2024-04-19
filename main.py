@@ -21,7 +21,7 @@ if single_file_running:
         r'1hz_3uA__240121_152738.rhs')
 
 if multiple_files_running:
-    parent_directory = r'C:\Users\Asus\PycharmProjects\MasterNotebook\data\2024_01_21\Stimulation Ch 20'
+    parent_directory = r'C:\Users\Asus\PycharmProjects\MasterNotebook\data\2024_01_25\Stimulation Ch 20'
     pattern = os.path.join(parent_directory, '*.rhs*')
     matching_files = glob.glob(pattern)
 

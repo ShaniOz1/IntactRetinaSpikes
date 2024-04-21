@@ -11,7 +11,7 @@ class DataObj:
     def __init__(self, path, reduce_faulty_electrodes=None):
         self.path = path
         self.output_folder = self.create_output_folder(path)
-        self.output_sub_folders = self.create_output_sub_folders(self.output_folder)
+        # self.output_sub_folders = self.create_output_sub_folders(self.output_folder)
 
         if path[-3:] == 'rhs':
             file = pyintan.File(path)

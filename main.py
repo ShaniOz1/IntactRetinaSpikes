@@ -17,11 +17,10 @@ Spontaneous_activity = False
 
 if single_file_running:
     file = (
-        r'C:\Users\Asus\PycharmProjects\MasterNotebook\data\2024_01_21\Stimulation Ch 20\e18 320us biphasic '
-        r'1hz_3uA__240121_152738.rhs')
+        r'C:\Users\Asus\PycharmProjects\MasterNotebook\data\2024_01_21\Stimulation Ch 20\e18 320us biphasic 1hz_2uA_240121_152227.rhs')
 
 if multiple_files_running:
-    parent_directory = r'C:\Users\Asus\PycharmProjects\MasterNotebook\data\2024_01_25\Stimulation Ch 20'
+    parent_directory = r'C:\Users\Asus\PycharmProjects\MasterNotebook\data\2023_12_31\No retina\Ch4'
     pattern = os.path.join(parent_directory, '*.rhs*')
     matching_files = glob.glob(pattern)
 
@@ -42,8 +41,6 @@ def main(file_path, apply_filter, impedance_check, direct_response, non_direct_r
         obj.signals_mat_3d, obj.artifacts_mat_3d = remove_stimulation_artifact.ica_based_method(obj.pulses)
         obj.spikes_dict = spikes_analysis.get_spikes(obj)
         viz.plot_direct_spikes(obj)
-
-
     print('Done')
     return obj
 

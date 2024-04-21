@@ -40,8 +40,6 @@ def ica_based_method(pulses):
             restored_comp = ica.inverse_transform(comp_temp) * data_std + data_mean
             real_max_list.append(abs(np.max(restored_comp)))
 
-
-
         # Divide components to artifact-related and signal-related
         pp_thresh = 160  # 1.4 msec gap
         art_related_comp = np.where((np.array(real_max_list) > 750) | (np.array(pp_list) < pp_thresh))
@@ -63,13 +61,13 @@ def ica_based_method(pulses):
     artifacts_mat_3d = np.stack(artifacts_mat, axis=1).transpose(2, 1, 0)
 
     ####################
-    plt.figure()
-    for p in np.arange(0, len(signals_mat_3d[:, 0, 0])):
-        plt.plot(signals_mat_3d[p, 0, :], color='grey')
-
-    plt.figure()
-    for p in np.arange(0, len(artifacts_mat_3d[:, 0, 0])):
-        plt.plot(artifacts_mat_3d[p, 0, :], color='k')
+    # plt.figure()
+    # for p in np.arange(0, len(signals_mat_3d[:, 0, 0])):
+    #     plt.plot(signals_mat_3d[p, 0, :], color='grey')
+    #
+    # plt.figure()
+    # for p in np.arange(0, len(artifacts_mat_3d[:, 0, 0])):
+    #     plt.plot(artifacts_mat_3d[p, 0, :], color='k')
 
     return signals_mat_3d, artifacts_mat_3d
 

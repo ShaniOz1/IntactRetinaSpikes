@@ -5,8 +5,8 @@ import glob
 from direct_response import prepare_roi_mat, remove_stimulation_artifact, spikes_analysis
 import viz
 
-single_file_running = False
-multiple_files_running = True
+single_file_running = True
+multiple_files_running = False
 multiple_files_comparison = False
 
 Apply_filter = True

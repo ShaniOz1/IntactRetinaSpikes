@@ -7,6 +7,7 @@ import pandas as pd
 import glob
 from datetime import datetime
 
+
 class DataObj:
     def __init__(self, path, reduce_faulty_electrodes=None):
         self.path = path

@@ -6,6 +6,7 @@ from scipy.signal import find_peaks
 from scipy.stats import kurtosis
 from datetime import datetime
 
+
 def get_spikes(obj):
     stimulation_ch_index = next((i for i, s in enumerate(obj.recording_channels) if str(obj.stimulation_channels) in s), -1)
     spikes_dict = {}

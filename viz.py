@@ -89,3 +89,31 @@ def plot_prob_schem(ax, red_indices, blue_indices, grey_indices=None):
     ax.set_xticks([])
     ax.set_yticks([])
 
+
+
+def plot_spikes_amps_vs_time(obj):
+    # mat = obj.signals_mat_3d[:, 22, :]
+    # mat = obj.signals_mat_3d[:, 7, :]
+    mat = obj.signals_mat_3d[:, 25, :]
+    min_vals = []
+    for row in mat:
+        min_vals.append(np.min(row))
+        plt.plot((np.arange(0, len(row))-125)/25, row/1000, color='grey', alpha=0.1)
+    plt.xlim(0, 10)
+    avg = np.mean(mat, axis=0)
+    plt.plot((np.arange(0, len(row))-125)/25, avg/1000, color='k')
+    # plt.ylim(-0.5, 0.3)
+
+    plt.figure(figsize=(8, 3))
+    plt.scatter(np.arange(0, len(min_vals)), np.array(min_vals) / 1000, color='k')
+    plt.xlabel('# Pulse')
+    plt.ylabel('Amplitude [mV]')
+    plt.tight_layout()
+    plt.ylim(-0.7, 0)
+    plt.xlim(0, 100)
+
+    # window_size = 15
+    # moving_avg = np.convolve(min_vals, np.ones(window_size) / window_size, mode='valid')
+    # x_moving_avg = np.arange(len(moving_avg)) + window_size // 2
+    # plt.plot(x_moving_avg, moving_avg / 1000, color='k', label=f'Moving Avg (win={window_size})')
+    #

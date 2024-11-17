@@ -64,7 +64,7 @@ def ica_based_method(pulses):
     # plt.figure()
     # for p in np.arange(0, len(signals_mat_3d[:, 0, 0])):
     #     plt.plot(signals_mat_3d[p, 0, :], color='grey')
-    #
+
     # plt.figure()
     # for p in np.arange(0, len(artifacts_mat_3d[:, 0, 0])):
     #     plt.plot(artifacts_mat_3d[p, 0, :], color='k')

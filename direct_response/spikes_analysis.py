@@ -41,27 +41,31 @@ def get_spikes(obj):
 
 
 def is_spike(sig):
-    # Hard threshold
-    hard_threshold_res = not(all(x > -50 for x in sig))
+    try:
+        # Hard threshold
+        hard_threshold_res = not(all(x > -50 for x in sig))
 
-    # Spike width
-    if hard_threshold_res is False:
-        width_res = False
-    else:
-        spike_signal = -sig
-        peaks, _ = scipy.signal.find_peaks(spike_signal)
-        peak_properties = scipy.signal.peak_widths(spike_signal, peaks)
-        largest_peak_index = peaks[np.argmax(peak_properties[1])]
-        left_ind = scipy.signal.peak_widths(spike_signal, [largest_peak_index], rel_height=0.5)[2]
-        right_ind = scipy.signal.peak_widths(spike_signal, [largest_peak_index], rel_height=0.5)[3]
-        width_sec = 1/25 * (right_ind - left_ind)
-        width_res = width_sec > 0.4
+        # Spike width
+        if hard_threshold_res is False:
+            width_res = False
+        else:
+            spike_signal = -sig
+            peaks, _ = scipy.signal.find_peaks(spike_signal)
+            peak_properties = scipy.signal.peak_widths(spike_signal, peaks)
+            largest_peak_index = peaks[np.argmax(peak_properties[1])]
+            left_ind = scipy.signal.peak_widths(spike_signal, [largest_peak_index], rel_height=0.5)[2]
+            right_ind = scipy.signal.peak_widths(spike_signal, [largest_peak_index], rel_height=0.5)[3]
+            width_sec = 1/25 * (right_ind - left_ind)
+            width_res = width_sec > 0.4
 
-        # Number of peaks
-        peaks, _ = scipy.signal.find_peaks(spike_signal, height=0.7*spike_signal[largest_peak_index])
-        peaks_num_res = False if len(peaks) > 2 else True
+            # Number of peaks
+            peaks, _ = scipy.signal.find_peaks(spike_signal, height=0.7*spike_signal[largest_peak_index])
+            peaks_num_res = False if len(peaks) > 2 else True
 
-    return True if (hard_threshold_res and width_res and peaks_num_res) else False
+        return True if (hard_threshold_res and width_res and peaks_num_res) else False
+
+    except Exception as e:
+        print(e)
 
 
 def is_mirror_artifact(sig_mat):

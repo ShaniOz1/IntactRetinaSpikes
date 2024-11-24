@@ -112,12 +112,13 @@ class DataObj:
         output_folder = path.split(os.path.sep)[-1][:-4]
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
-        now = datetime.now()
-        now_str = now.strftime("%Y-%m-%d_%H-%M-%S")
-        now_output_folder = os.path.join(output_folder, now_str)
-        if not os.path.exists(now_output_folder):
-            os.makedirs(now_output_folder)
-        return now_output_folder
+        # now = datetime.now()
+        # now_str = now.strftime("%Y-%m-%d_%H-%M-%S")
+        # now_output_folder = os.path.join(output_folder, now_str)
+        # if not os.path.exists(now_output_folder):
+        #     os.makedirs(now_output_folder)
+        # return now_output_folder
+        return output_folder
 
     @staticmethod
     def create_output_sub_folders(path):

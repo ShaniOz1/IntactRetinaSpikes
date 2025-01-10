@@ -96,23 +96,59 @@ def plot_prob_schem(ax, red_indices, blue_indices, grey_indices=None):
 def plot_spikes_amps_vs_time(obj):
     # mat = obj.signals_mat_3d[:, 22, :]
     # mat = obj.signals_mat_3d[:, 7, :]
-    mat = obj.signals_mat_3d[:, 17, :]
+
+    fig = plt.figure(figsize=(15, 4))
+    gs = GridSpec(1, 4, figure=fig, width_ratios=[1, 1, 1, 1])
+
+    # First row: Single plot spanning the entire width
+    ax1 = fig.add_subplot(gs[0, 0:1])
+
+    ch = 25
+    mat = obj.signals_mat_3d[:, ch, :]
     min_vals = []
     for row in mat:
         min_vals.append(np.min(row))
-        plt.plot((np.arange(0, len(row))-125)/25, row/1000, color='grey', alpha=0.1)
-    plt.xlim(0, 10)
+        # plt.plot((np.arange(0, len(row))-125)/25, row/1000, color='grey', alpha=0.1)
+        ax1.plot((np.arange(0, len(row))-125)/25, row/1000, color='k', linewidth=0.1)
+    ax1.set_xlim(0, 10)
     avg = np.mean(mat, axis=0)
-    plt.plot((np.arange(0, len(row))-125)/25, avg/1000, color='k')
-    # plt.ylim(-0.5, 0.3)
+    ax1.plot((np.arange(0, len(row))-125)/25, avg/1000, color='k', linewidth=2)
+    plt.ylim(-0.8, 0.4)
+    # ax1.set_ylim(-0.95, 0.7)
+    ax1.grid(True, linestyle='--', linewidth=0.5, alpha=0.7)
+    ax1.tick_params(axis='x', labelsize=14)
+    ax1.tick_params(axis='y', labelsize=14)
+    ax1.set_xlabel('Time [s]', fontsize=14)
+    ax1.set_ylabel('Amplitude [mV]', fontsize=14)
 
-    plt.figure(figsize=(8, 3))
-    plt.scatter(np.arange(0, len(min_vals)), np.array(min_vals) / 1000, color='k')
-    plt.xlabel('# Pulse')
-    plt.ylabel('Amplitude [mV]')
-    plt.tight_layout()
+    ax2 = fig.add_subplot(gs[0, 1:4])
+
+    # plt.figure(figsize=(8, 3))
+    ax2.scatter(np.arange(0, len(min_vals)), np.array(min_vals) / 1000, color='k', marker='.', s=30)
+    ax2.set_xlabel('# Pulse', fontsize=14)
+    # ax2.set_ylabel('Amplitude [mV]')
     plt.ylim(-0.7, 0)
-    plt.xlim(0, 100)
+    # ax2.set_ylim(-0.95, 0)
+    ax2.set_xlim(0, 100)
+    ax2.tick_params(axis='x', labelsize=14)
+    ax2.tick_params(axis='y', labelsize=14)
+
+
+    arr = np.abs(np.array(min_vals) / 1000)
+    # plt.scatter(np.arange(0, len(min_vals)), arr, color='k', marker='.', s=30)
+
+    # Extract the first and last 10 points
+    first_10 = arr[:10]
+    last_10 = arr[-10:]
+
+    # Calculate averages
+    avg_first_10 = np.mean(first_10)
+    avg_last_10 = np.mean(last_10)
+
+    # Calculate the decrease
+    decrease = round(100 * (avg_first_10 - avg_last_10), 2)
+    plt.title(f'decrease={decrease}_{obj.file_name}_ch{ch}', fontsize=8)
+    plt.tight_layout()
 
     # window_size = 15
     # moving_avg = np.convolve(min_vals, np.ones(window_size) / window_size, mode='valid')

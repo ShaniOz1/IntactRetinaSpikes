@@ -6,23 +6,24 @@ from direct_response import prepare_roi_mat, remove_stimulation_artifact, spikes
 import viz
 import utils
 
-single_file_running = False
-multiple_files_running = True
+single_file_running = True
+multiple_files_running = False
 multiple_files_comparison = False
 
 Apply_filter = True
 Impedance_check = True
-Direct_response = False
-Indirect_response = True
+Direct_response = True
+Indirect_response = False
 Spontaneous_activity = False
 
 if single_file_running:
     file = (
         # r'C:\Users\Asus\PycharmProjects\MasterNotebook\data\2024_01_21\Stimulation Ch 20\e18 320us biphasic 1hz_2uA_240121_152227.rhs')
-        r'C:\Shani\Intact\old\2023.05.24\retina 1\softC_iv_2023_3_320us_40us_200 times_1hz_10uA_230524_094035\softC_iv_2023_3_320us_40us_200 times_1hz_10uA_230524_094235.rhs')
+        # r'C:\Shani\Intact\old\2023.05.24\retina 1\softC_iv_2023_3_320us_40us_200 times_1hz_10uA_230524_094035\softC_iv_2023_3_320us_40us_200 times_1hz_10uA_230524_094235.rhs')
+        r'C:\Shani\Intact\run\intact\retina1\320us 40usdelay 10uA 10hz_100pulses_230528_120802.rhs')
 
 if multiple_files_running:
-    parent_directory = r'C:\Shani\Intact\old'
+    parent_directory = r'C:\Shani\Intact\run'
     pattern = os.path.join(parent_directory, '**', '*.rhs*')
     matching_files = glob.glob(pattern, recursive=True)
 
@@ -32,7 +33,7 @@ def main(file_path, apply_filter, impedance_check, direct_response, non_direct_r
     try:
         obj = DataObj(file_path, reduce_faulty_electrodes=impedance_check)
         # TODO:
-        # obj.stimulation_indexes = obj.stimulation_indexes[200:300]
+        obj.stimulation_indexes = obj.stimulation_indexes[200:300]
 
         if apply_filter:
             sos = signal.butter(2, [300, 3000], btype='bandpass', fs=int(obj.sample_rate), output='sos')
@@ -44,9 +45,10 @@ def main(file_path, apply_filter, impedance_check, direct_response, non_direct_r
                                                              win_size=15)
 
             obj.signals_mat_3d, obj.artifacts_mat_3d = remove_stimulation_artifact.ica_based_method(obj.pulses)
-            # viz.plot_spikes_amps_vs_time(obj)
             obj.spikes_dict = spikes_analysis.get_spikes(obj)
             viz.plot_direct_spikes(obj)
+            viz.plot_spikes_amps_vs_time(obj)
+
 
         if Indirect_response:
             indirect_response_spikes = utils.indirect_response_indices(obj)
@@ -63,6 +65,6 @@ if single_file_running:
 
 if multiple_files_running:
     for file in matching_files:
-        if os.path.basename(file) == 'softC_iv_2023_3_120us_10 times_1hz_20uA__230524_144600.rhs':
-            print(f'Analyzing {file}...')
-            main(file, Apply_filter, Impedance_check, Direct_response, Indirect_response, Spontaneous_activity)
+        # if os.path.basename(file) == '320us 40usdelay 10uA 10hz_100pulses_230528_120802.rhs':
+        #     print(f'Analyzing {file}...')
+        main(file, Apply_filter, Impedance_check, Direct_response, Indirect_response, Spontaneous_activity)

@@ -7,7 +7,7 @@ import viz
 import utils
 from pathlib import Path
 
-# local_path = r'C:\Shani\SoftC prob\16Ch prob experiments\2025.01.08 E14\Retina2\On Retina'
+# local_path = r'C:\Shani\SoftC prob\16Ch prob experiments\2025.01.08 E14\Retina2'
 local_path = r'C:\Shani\SoftC prob\16Ch prob experiments\2025.01.08 E14\Retina3'
 
 pattern = os.path.join(local_path, '**', '*.rhs*')
@@ -15,7 +15,7 @@ matching_files = glob.glob(pattern, recursive=True)
 objects = []
 
 for file in matching_files:
-    if 'Ch2' in file:
+    if 'Ch10' in file:
         obj = DataObj(file, create_output_folder=False)
         # sos = signal.butter(2, [300, 3000], btype='bandpass', fs=int(obj.sample_rate), output='sos')
         # obj.recording_data = signal.sosfiltfilt(sos, obj.recording_data)
@@ -30,5 +30,6 @@ for file in matching_files:
     # viz.plot_overlay_pulses([obj])
 viz.plot_overlay_pulses(objects)
 
-print('h')
+print('done')
+
 

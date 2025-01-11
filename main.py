@@ -20,7 +20,7 @@ if single_file_running:
     file = (
         # r'C:\Users\Asus\PycharmProjects\MasterNotebook\data\2024_01_21\Stimulation Ch 20\e18 320us biphasic 1hz_2uA_240121_152227.rhs')
         # r'C:\Shani\Intact\old\2023.05.24\retina 1\softC_iv_2023_3_320us_40us_200 times_1hz_10uA_230524_094035\softC_iv_2023_3_320us_40us_200 times_1hz_10uA_230524_094235.rhs')
-        r'C:\Shani\Intact\run\intact\retina1\320us 40usdelay 10uA 10hz_100pulses_230528_120802.rhs')
+        r'C:\Shani\SoftC prob\16Ch prob experiments\2025.01.08 E14\Retina1\Ch10_300us_50us_1uA_1Hz_50pulse_250108_134747\Ch10_300us_50us_1uA_1Hz_50pulse_250108_134747.rhs')
 
 if multiple_files_running:
     parent_directory = r'C:\Shani\Intact\run'
@@ -32,8 +32,6 @@ def main(file_path, apply_filter, impedance_check, direct_response, non_direct_r
          spontaneous_activity):
     try:
         obj = DataObj(file_path, reduce_faulty_electrodes=impedance_check)
-        # TODO:
-        obj.stimulation_indexes = obj.stimulation_indexes[200:300]
 
         if apply_filter:
             sos = signal.butter(2, [300, 3000], btype='bandpass', fs=int(obj.sample_rate), output='sos')

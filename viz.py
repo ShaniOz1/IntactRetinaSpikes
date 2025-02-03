@@ -6,91 +6,128 @@ import os
 
 
 def plot_direct_spikes(obj):
-    fig, axs = plt.subplots(3, 2, figsize=(10, 12))
     response_channels = [int(key[-3:]) for key in obj.spikes_dict.keys()]
-    plot_prob_schem(axs[0, 0], [obj.stimulation_channels], response_channels)
+    if len(response_channels) > 0:
+        fs_ms = obj.sample_rate / 1000
+        fig, axs = plt.subplots(3, 2, figsize=(10, 12))
 
-    for (title, signals), ax in zip(obj.spikes_dict.items(), axs.flatten()[1:]):
-        for row in signals:
-            ax.plot((np.arange(0, signals.shape[1]) - 125) / 25, row, color='lightgrey', alpha=0.8)
-        ax.plot((np.arange(0, signals.shape[1]) - 125) / 25, np.mean(signals, axis=0), 'k')
+        plot_prob_schem(axs[0, 0], [obj.stimulation_channels], response_channels, prob='prob16')
 
-        ax.set_title(f'Ch - {title}')
-        ax.set_xlabel('Time after stimulation [msec]')
-        ax.set_ylabel('Amplitude [uV]')
-        ax.set_ylim([-500, 500])
-    plt.suptitle(f'{obj.file_name[:-3]}')
-    plt.tight_layout()
-    plt.savefig(rf'{obj.output_folder}/Direct_response.png')
-    plt.close()
+        for (title, signals), ax in zip(obj.spikes_dict.items(), axs.flatten()[1:]):
+            for row in signals:
+                ax.plot((np.arange(0, signals.shape[1]) - 5*fs_ms) / fs_ms, row, color='lightgrey', alpha=0.8)
+            ax.plot((np.arange(0, signals.shape[1]) - 5*fs_ms) / fs_ms, np.mean(signals, axis=0), 'k')
 
-
-
-
-
-
-def plot_prob_schem(ax, red_indices, blue_indices, grey_indices=None):
-    # Numbers for the inner and outer circles
-    inner_numbers = [13, 2, 12, 3, 11, 4, 10, 5, 9, 6, 8, 7, 99, 99, 99, 99, 15, 0, 14, 1]
-    outer_numbers = [25, 22, 26, 21, 27, 20, 28, 19, 29, 18, 30, 17, 31, 16, 99, 99, 99, 99, 24,23]
-
-    # Plot concentric circles
-    circle1 = plt.Circle((0, 0), 1, color='grey', alpha=0.3, fill=False, linewidth=20)
-    circle2 = plt.Circle((0, 0), 2, color='grey', alpha=0.3, fill=False, linewidth=20)
-    ax.add_artist(circle1)
-    ax.add_artist(circle2)
-
-    # Calculate points on the circles
-    angles_inner = np.linspace(0, 2*np.pi, len(inner_numbers), endpoint=False)
-    x1_inner = np.cos(angles_inner)
-    y1_inner = np.sin(angles_inner)
-
-    angles_outer = np.linspace(0, 2*np.pi, len(outer_numbers), endpoint=False)
-    x1_outer = 2 * np.cos(angles_outer)
-    y1_outer = 2 * np.sin(angles_outer)
-
-    # Plot numbers on the inner circle
-    for i, (px, py) in enumerate(zip(x1_inner, y1_inner)):
-        if inner_numbers[i] == 99:
-            continue
-        if inner_numbers[i] in red_indices:
-            color = 'red'
-            label = 'Red'
-        elif inner_numbers[i] in blue_indices:
-            color = 'dodgerblue'
-            label = 'dodgerblue'
-        else:
-            color = 'black'
-            label = None
-        ax.text(px, py, str(inner_numbers[i]), color=color, fontsize=8, ha='center', va='center')
-
-    # Plot numbers on the outer circle
-    for i, (px, py) in enumerate(zip(x1_outer, y1_outer)):
-        if outer_numbers[i] == 99:
-            continue
-        if outer_numbers[i] in red_indices:
-            color = 'red'
-        elif outer_numbers[i] in blue_indices:
-            color = 'dodgerblue'
-        else:
-            color = 'black'
-        ax.text(px, py, str(outer_numbers[i]), color=color, fontsize=10, ha='center', va='center')
+            ax.set_title(f'Ch - {title}')
+            ax.set_xlabel('Time after stimulation [msec]')
+            ax.set_ylabel('Amplitude [uV]')
+            ax.set_ylim([-500, 500])
+        plt.suptitle(f'{obj.file_name[:-3]}')
+        plt.tight_layout()
+        plt.savefig(rf'{obj.output_folder}/Direct_response.png')
+        plt.close()
 
 
-    # Set equal aspect ratio and limits
-    ax.set_aspect('equal', 'box')
-    ax.set_xlim(-2.5, 2.5)
-    ax.set_ylim(-2.5, 2.5)
+def plot_prob_schem(ax, red_indices, blue_indices, prob):
+    if prob == 'prob32':
+        # Numbers for the inner and outer circles
+        inner_numbers = [13, 2, 12, 3, 11, 4, 10, 5, 9, 6, 8, 7, 99, 99, 99, 99, 15, 0, 14, 1]
+        outer_numbers = [25, 22, 26, 21, 27, 20, 28, 19, 29, 18, 30, 17, 31, 16, 99, 99, 99, 99, 24, 23]
 
-    # Create custom legend
-    red_patch = mpatches.Patch(color='red', label='Stimulation')
-    blue_patch = mpatches.Patch(color='dodgerblue', label='Direct response')
-    ax.legend(handles=[red_patch, blue_patch], loc='upper left', fontsize='x-small', ncol=2, bbox_to_anchor=(0, 1.15))
+        # Plot concentric circles
+        circle1 = plt.Circle((0, 0), 1, color='grey', alpha=0.3, fill=False, linewidth=20)
+        circle2 = plt.Circle((0, 0), 2, color='grey', alpha=0.3, fill=False, linewidth=20)
+        ax.add_artist(circle1)
+        ax.add_artist(circle2)
 
-    # Remove x and y ticks
-    ax.set_xticks([])
-    ax.set_yticks([])
+        # Calculate points on the circles
+        angles_inner = np.linspace(0, 2*np.pi, len(inner_numbers), endpoint=False)
+        x1_inner = np.cos(angles_inner)
+        y1_inner = np.sin(angles_inner)
 
+        angles_outer = np.linspace(0, 2*np.pi, len(outer_numbers), endpoint=False)
+        x1_outer = 2 * np.cos(angles_outer)
+        y1_outer = 2 * np.sin(angles_outer)
+
+        # Plot numbers on the inner circle
+        for i, (px, py) in enumerate(zip(x1_inner, y1_inner)):
+            if inner_numbers[i] == 99:
+                continue
+            if inner_numbers[i] in red_indices:
+                color = 'red'
+                label = 'Red'
+            elif inner_numbers[i] in blue_indices:
+                color = 'dodgerblue'
+                label = 'dodgerblue'
+            else:
+                color = 'black'
+                label = None
+            ax.text(px, py, str(inner_numbers[i]), color=color, fontsize=8, ha='center', va='center')
+
+        # Plot numbers on the outer circle
+        for i, (px, py) in enumerate(zip(x1_outer, y1_outer)):
+            if outer_numbers[i] == 99:
+                continue
+            if outer_numbers[i] in red_indices:
+                color = 'red'
+            elif outer_numbers[i] in blue_indices:
+                color = 'dodgerblue'
+            else:
+                color = 'black'
+            ax.text(px, py, str(outer_numbers[i]), color=color, fontsize=10, ha='center', va='center')
+
+        # Set equal aspect ratio and limits
+        ax.set_aspect('equal', 'box')
+        ax.set_xlim(-2.5, 2.5)
+        ax.set_ylim(-2.5, 2.5)
+
+        # Create custom legend
+        red_patch = mpatches.Patch(color='red', label='Stimulation')
+        blue_patch = mpatches.Patch(color='dodgerblue', label='Direct response')
+        ax.legend(handles=[red_patch, blue_patch], loc='upper left', fontsize='x-small', ncol=2, bbox_to_anchor=(0, 1.15))
+
+        # Remove x and y ticks
+        ax.set_xticks([])
+        ax.set_yticks([])
+
+    if prob == 'prob16':
+        outer_numbers = [26, 5, 25, 6, 24, 7, 28, 2, 29, 1, 30, 0, 31, 99, 99, 99, 3, 27, 4]
+
+        # Plot only the outer circle
+        circle = plt.Circle((0, 0), 2, color='grey', alpha=0.3, fill=False, linewidth=20)
+        ax.add_artist(circle)
+
+        # Calculate points on the outer circle
+        angles_outer = np.linspace(0, 2 * np.pi, len(outer_numbers), endpoint=False)
+        x1_outer = 2 * np.cos(angles_outer)
+        y1_outer = 2 * np.sin(angles_outer)
+
+        # Plot numbers on the outer circle
+        for i, (px, py) in enumerate(zip(x1_outer, y1_outer)):
+            if outer_numbers[i] == 99:
+                continue
+            if outer_numbers[i] in red_indices:
+                color = 'red'
+            elif outer_numbers[i] in blue_indices:
+                color = 'dodgerblue'
+            else:
+                color = 'black'
+            ax.text(px, py, str(outer_numbers[i]), color=color, fontsize=10, ha='center', va='center')
+
+        # Set equal aspect ratio and limits
+        ax.set_aspect('equal', 'box')
+        ax.set_xlim(-2.5, 2.5)
+        ax.set_ylim(-2.5, 2.5)
+
+        # Create custom legend (assuming you have red/blue color mappings)
+        red_patch = mpatches.Patch(color='red', label='Stimulation')
+        blue_patch = mpatches.Patch(color='dodgerblue', label='Direct response')
+        ax.legend(handles=[red_patch, blue_patch], loc='upper left', fontsize='x-small', ncol=2,
+                  bbox_to_anchor=(0, 1.15))
+
+        # Remove x and y ticks
+        ax.set_xticks([])
+        ax.set_yticks([])
 
 
 def plot_spikes_amps_vs_time(obj):
@@ -182,9 +219,9 @@ def plot_indirect_response(obj, spikes_indices):
     # obj.stimulation_indexes = obj.stimulation_indexes[:10]
     # spikes_indices = [arr[arr <= 295564] for arr in spikes_indices]
     #
-    for i, row in enumerate(obj.recording_data):
-        color = 'r' if i == 15 else 'k'
-        plt.plot(row+300*i, color=color, linewidth=0.2)
+    # for i, row in enumerate(obj.recording_data):
+    #     color = 'r' if i == 15 else 'k'
+    #     plt.plot(row+300*i, color=color, linewidth=0.2)
 
 
     times = np.arange(0, len(obj.recording_data[0, :])) / obj.sample_rate
@@ -523,3 +560,45 @@ def plot_overlay_pulses(obj_list, average=True):
     #
     #
     # plt.tight_layout()
+
+
+def plot_artifacts_vs_signals(obj):
+    signals_mat_3d = obj.signals_mat_3d
+    artifacts_mat_3d = obj.artifacts_mat_3d
+    response_channels = [int(key[-3:]) for key in obj.spikes_dict.keys()]
+    if len(response_channels) > 0:
+
+        # Create a figure with 2 rows and len(signals_mat_3d[0]) columns
+        fig, axs = plt.subplots(2, len(signals_mat_3d[0]), figsize=(18, 4))  # Adjust figsize as needed
+        ch_names = ['B-000', 'B-001', 'B-002', 'B-003', 'B-004', 'B-005', 'B-006', 'B-007', 'B-024', 'B-025', 'B-026',
+                    'B-027', 'B-028', 'B-029', 'B-030', 'B-031']
+
+        # Plot signals in the first row
+        for i in range(len(signals_mat_3d[0])):  # Loop through the columns (e.g., 2 columns in your data)
+            for p in range(len(signals_mat_3d[:, 0, 0])):  # Loop through the signals
+                axs[0, i].plot(signals_mat_3d[p, i, :], color='grey', linewidth=0.5)  # Plot each signal
+
+            # Remove x-ticks, y-ticks, x-labels, and y-labels
+            axs[0, i].set_xticks([])
+            axs[0, i].set_yticks([])
+            axs[0, i].set_xlabel('')
+            axs[0, i].set_ylabel('')
+            axs[0, i].set_ylim(-200, 200)
+            axs[0, i].set_title(ch_names[i], fontsize=6)
+
+        # Plot artifacts in the second row
+        for i in range(len(artifacts_mat_3d[0])):  # Loop through the columns (same as signals_mat_3d)
+            for p in range(len(artifacts_mat_3d[:, 0, 0])):  # Loop through the artifacts
+                axs[1, i].plot(artifacts_mat_3d[p, i, :], color='k', linewidth=0.5)  # Plot each artifact
+
+            # Remove x-ticks, y-ticks, x-labels, and y-labels
+            axs[1, i].set_xticks([])
+            axs[1, i].set_yticks([])
+            axs[1, i].set_xlabel('')
+            axs[1, i].set_ylabel('')
+            axs[1, i].set_ylim(-5000, 5000)
+
+        # Adjust layout to avoid overlap and set a main title for the figure
+        plt.tight_layout()
+        plt.savefig(rf'{obj.output_folder}/Artifacts_vs_signals.png')
+        plt.close()

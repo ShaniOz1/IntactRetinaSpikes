@@ -18,7 +18,7 @@ def ica_based_method(pulses):
 
         # Preform ICA
         num_comp = 6
-        ica = FastICA(n_components=num_comp, random_state=42, max_iter=100)
+        ica = FastICA(n_components=num_comp, random_state=42, max_iter=1000)
         ica.fit(data)
         # print(f'Number of iterations taken for convergence: {ica.n_iter_}')
         components = ica.transform(data)
@@ -29,7 +29,7 @@ def ica_based_method(pulses):
         for ind in range(0, num_comp):
             # fig=plt.figure()
             # plt.plot(components[:, ind] - 10 * ind)
-            plt.plot((np.arange(0, len(components[:, 0])) / 20)-5, components[:, ind]-10*ind)
+            # plt.plot((np.arange(0, len(components[:, 0])) / 20)-5, components[:, ind]-10*ind)
             largest_peak_index = np.argmax(np.abs(components[:, ind]))
             pp_list.append(largest_peak_index)
 
@@ -64,10 +64,12 @@ def ica_based_method(pulses):
     # plt.figure()
     # for p in np.arange(0, len(signals_mat_3d[:, 0, 0])):
     #     plt.plot(signals_mat_3d[p, 0, :], color='grey')
-
+    #
     # plt.figure()
     # for p in np.arange(0, len(artifacts_mat_3d[:, 0, 0])):
     #     plt.plot(artifacts_mat_3d[p, 0, :], color='k')
+
+    ####################
 
     return signals_mat_3d, artifacts_mat_3d
 

@@ -24,7 +24,8 @@ class DataObj:
             self.recording_channels = file.analog_signals[0].channel_names[0]
             try:
                 self.stimulation_data = file.stimulation[0].signal
-                self.stimulation_channels = int(self.recording_channels[file.stimulation[0].channels][-3:])
+                self.stimulation_channels = file.stimulation[0].channels
+                self.stimulation_channels_names = int(self.recording_channels[file.stimulation[0].channels][-3:])
                 self.stimulation_indexes = self.get_stimulation_indexes(self.stimulation_data, path[-3:])
                 self.stimulation_trials = self.get_stimulation_trials(self.stimulation_data, path[-3:])
                 self.stimulation_current = file.stimulation[0].current_levels.max()

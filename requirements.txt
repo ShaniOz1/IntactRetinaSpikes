@@ -1,0 +1,8 @@
+numpy~=1.26.4
+matplotlib~=3.8.0
+scipy~=1.13.1
+quantities~=0.16.1
+setuptools~=68.2.0
+pandas~=2.2.3
+pyEDFlib~=0.1.38
+scikit-learn~=1.6.1
